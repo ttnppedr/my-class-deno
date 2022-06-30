@@ -1,8 +1,21 @@
 import { Application, Router } from "https://deno.land/x/oak/mod.ts";
+import {
+  collection,
+  getDocs,
+} from "https://www.gstatic.com/firebasejs/9.8.4/firebase-firestore-lite.js";
+import { db } from "./firebase/firestore.ts";
+import { ClassSchema } from "./firebase/schemas/ClassSchema.ts";
 
 const router = new Router();
-router.get("/", (ctx) => {
-  ctx.response.body = "Hello world!";
+router.get("/api/classes", async (ctx) => {
+  const classes = await getDocs(collection(db, "class"));
+  const classesArr: Array<ClassSchema> = [];
+
+  classes.forEach((element) => {
+    classesArr.push({ id: element.id, ...element.data() });
+  }, this);
+
+  ctx.response.body = JSON.stringify(classesArr);
 });
 
 const app = new Application();
