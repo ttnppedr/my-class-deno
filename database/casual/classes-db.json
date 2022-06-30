@@ -1,0 +1,19 @@
+{
+  "classes": [
+    {
+      "id": 1,
+      "name": "name1",
+      "path": "frontendmaster/1.mp4"
+    },
+    {
+      "id": 2,
+      "name": "name2",
+      "path": "frontendmaster/2.mp4"
+    },
+    {
+      "id": 3,
+      "name": "name3",
+      "path": "frontendmaster/3.mp4"
+    }
+  ]
+}
