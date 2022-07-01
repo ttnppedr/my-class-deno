@@ -1,5 +1,9 @@
-import "https://deno.land/x/dotenv/load.ts";
-import { Application, Router, Status } from "https://deno.land/x/oak/mod.ts";
+import "https://deno.land/x/dotenv@v3.2.0/load.ts";
+import {
+  Application,
+  Router,
+  Status,
+} from "https://deno.land/x/oak@v10.6.0/mod.ts";
 import {
   collection,
   doc,

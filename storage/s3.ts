@@ -1,4 +1,4 @@
-import "https://deno.land/x/dotenv/load.ts";
+import "https://deno.land/x/dotenv@v3.2.0/load.ts";
 import { S3Client } from "https://deno.land/x/aws_sdk@v3.32.0-1/client-s3/mod.ts";
 
 export const s3 = new S3Client({
