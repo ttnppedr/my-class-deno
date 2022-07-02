@@ -99,6 +99,59 @@ router.post("/api/classes/:id", async (ctx) => {
   ctx.response.body = "OK";
 });
 
+router.post("/api/login", async (ctx) => {
+  const { email } = await ctx.request.body().value;
+
+  const uuid = crypto.randomUUID();
+
+  await ky.put(
+    `https://api.cloudflare.com/client/v4/accounts/${
+      Deno.env.get("CLOUDFLARE_ACCOUNT_ID")
+    }/storage/kv/namespaces/${
+      Deno.env.get("CLOUDFLARE_KV_NAMESPACE")
+    }/values/${uuid}?expiration_ttl=86400`,
+    {
+      headers: {
+        "X-Auth-Email": Deno.env.get("CLOUDFLARE_AUTH_EMAIL"),
+        "X-Auth-Key": Deno.env.get("CLOUDFLARE_AUTH_KEY"),
+        "Content-Type": "text/plain",
+      },
+      json: { email },
+    },
+  );
+
+  ctx.response.status = Status.OK;
+  ctx.response.body = uuid;
+});
+
+router.post("/api/me", async (ctx) => {
+  const { token } = await ctx.request.body().value;
+
+  try {
+    const res = await ky.get(
+      `https://api.cloudflare.com/client/v4/accounts/${
+        Deno.env.get("CLOUDFLARE_ACCOUNT_ID")
+      }/storage/kv/namespaces/${
+        Deno.env.get("CLOUDFLARE_KV_NAMESPACE")
+      }/values/${token}`,
+      {
+        headers: {
+          "X-Auth-Email": Deno.env.get("CLOUDFLARE_AUTH_EMAIL"),
+          "X-Auth-Key": Deno.env.get("CLOUDFLARE_AUTH_KEY"),
+        },
+      },
+    ).json();
+
+    ctx.response.status = Status.OK;
+    ctx.response.body = JSON.stringify(res);
+  } catch (e) {
+    console.log(e);
+
+    ctx.response.status = Status.Unauthorized;
+    ctx.response.body = "401 Unauthorized";
+  }
+});
+
 const app = new Application();
 app.use(router.routes());
 app.use(router.allowedMethods());
